@@ -4,7 +4,11 @@ Problem Statement: During certain hours in the day it can be difficult to find a
 Mission Statement: At CampusCrowds we are committed to providing a tool to help students save time waiting in lines. We aim to promote a healthy lifestyle by reducing stress and enabling regular eating habits.
 
 Melinda Grad - Project Manager
+
 Matt Saiki - Engineer
+
 Taylor Coury - Design
+
 Spencer McDonald - Product Manager
+
 Maeve McClatchey - Engineer
