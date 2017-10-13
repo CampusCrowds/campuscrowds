@@ -1,0 +1,18 @@
+[
+    {
+        "merged": "C:\\Users\\Matthew\\Desktop\\AndroidApps\\CampusCrowds2\\app\\build\\intermediates\\res\\merged\\debug\\layout-v21\\notification_template_icon_group.xml",
+        "source": "C:\\Users\\Matthew\\.android\\build-cache\\dfc5851e2be95318d904e7699c5836513dfb6885\\output\\res\\layout-v21\\notification_template_icon_group.xml"
+    },
+    {
+        "merged": "C:\\Users\\Matthew\\Desktop\\AndroidApps\\CampusCrowds2\\app\\build\\intermediates\\res\\merged\\debug\\layout-v21\\notification_action_tombstone.xml",
+        "source": "C:\\Users\\Matthew\\.android\\build-cache\\dfc5851e2be95318d904e7699c5836513dfb6885\\output\\res\\layout-v21\\notification_action_tombstone.xml"
+    },
+    {
+        "merged": "C:\\Users\\Matthew\\Desktop\\AndroidApps\\CampusCrowds2\\app\\build\\intermediates\\res\\merged\\debug\\layout-v21\\notification_action.xml",
+        "source": "C:\\Users\\Matthew\\.android\\build-cache\\dfc5851e2be95318d904e7699c5836513dfb6885\\output\\res\\layout-v21\\notification_action.xml"
+    },
+    {
+        "merged": "C:\\Users\\Matthew\\Desktop\\AndroidApps\\CampusCrowds2\\app\\build\\intermediates\\res\\merged\\debug\\layout-v21\\notification_template_custom_big.xml",
+        "source": "C:\\Users\\Matthew\\.android\\build-cache\\dfc5851e2be95318d904e7699c5836513dfb6885\\output\\res\\layout-v21\\notification_template_custom_big.xml"
+    }
+]

@@ -1,0 +1,63 @@
+{
+  "project_info": {
+    "project_number": "398634659086",
+    "firebase_url": "https://campuscrowds-69eb5.firebaseio.com",
+    "project_id": "campuscrowds-69eb5",
+    "storage_bucket": "campuscrowds-69eb5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:398634659086:android:15574079dd9b930b",
+        "android_client_info": {
+          "package_name": "campuscrowds.campuscrowds"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "398634659086-inkqev319rglbmgvim7ie94sed4c3bse.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "campuscrowds.campuscrowds",
+            "certificate_hash": "9871bad5f8ae0979e10c4c3161454b3fd6f0acd6"
+          }
+        },
+        {
+          "client_id": "398634659086-2o0iu0d58hmgk44q8jbjgrg50tdksdjc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "campuscrowds.campuscrowds",
+            "certificate_hash": "4a5bdda4e4c7aa84d535d5f89956a0465d29150f"
+          }
+        },
+        {
+          "client_id": "398634659086-8gqms369gssqalfm1jv4u5043rlk4r8i.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCL2unk7-JBOTwDu31X3lJCBH1OW8_l-t8"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "398634659086-8gqms369gssqalfm1jv4u5043rlk4r8i.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
