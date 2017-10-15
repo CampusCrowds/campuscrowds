@@ -1,5 +1,6 @@
 package campuscrowds.campuscrowds;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -11,7 +12,14 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.List;
 
@@ -24,7 +32,6 @@ import java.util.List;
 public class DiningListFragment extends Fragment {
     private RecyclerView mLocationRecyvlerView;
     private LocationAdapter mAdapter;
-
 
     //Creates and returns this fragment's view hierarchy
     @Override
@@ -41,11 +48,15 @@ public class DiningListFragment extends Fragment {
         public static final String LOCATION_ID  = "LOCATION_ID";
         private TextView mLocationNameView;
 
+        private ImageView mColorIndicator;
+        private DatabaseReference mColorReference;
+
         //Inflate list_location, pass it into the super constructor
         //ViewHolder class holds onto the view in the heirarchy
         public LocationHolder(LayoutInflater Li, ViewGroup Vg){
             super(Li.inflate(R.layout.list_location, Vg, false));
             mLocationNameView = (TextView) itemView.findViewById(R.id.location_name);
+            mColorIndicator = (ImageView) itemView.findViewById(R.id.color_indicator);
         }
 
         //This is called each time a new location is displayed in the LocationHolder
@@ -53,6 +64,31 @@ public class DiningListFragment extends Fragment {
         public void bind(DiningLocation location){
             mLocation = location;
             mLocationNameView.setText(mLocation.getLocationName());
+
+            //Responds to updates in the database, changes color of the ImageView based on the wait time
+            mColorReference = FirebaseDatabase.getInstance().getReference("location/"+mLocation.getLocationName()+"/3");
+            //Add a value event listener to the wait time
+            ValueEventListener timeListener = new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    String s = dataSnapshot.getValue(String.class);
+                    int colorTime = Integer.parseInt(s);
+                    if(colorTime >= 0 && colorTime <= 5){
+                        mColorIndicator.setBackgroundColor(Color.rgb(0,255,0));
+                    }
+                    else if (colorTime > 5 && colorTime <= 10){
+                        mColorIndicator.setBackgroundColor(Color.rgb(255,255,0));
+                    }
+                    else{
+                        mColorIndicator.setBackgroundColor(Color.rgb(255,0,0));
+                    }
+                }
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    //TODO make an error message
+                }
+            };
+            mColorReference.addValueEventListener(timeListener);
 
             //Responds to clicks
             mLocationNameView.setOnClickListener(new View.OnClickListener(){
@@ -89,7 +125,7 @@ public class DiningListFragment extends Fragment {
             return new LocationHolder(Li, parent);
         }
 
-        //Called each time the RecyclerView rhas the holder bound to the location
+        //Called each time the RecyclerView has the holder bound to the location
         @Override
         public void onBindViewHolder(LocationHolder holder, int position) {
             DiningLocation location = mLocations.get(position);
