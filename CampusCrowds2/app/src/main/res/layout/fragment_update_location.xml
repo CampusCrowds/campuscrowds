@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_margin="5dp"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/location_picture"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:cropToPadding="true"
+        android:scaleType="centerInside"
+        android:background="@android:color/darker_gray"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="10dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/black"
+            android:textSize="20sp"
+            android:text="Wait Time: "/>
+
+        <EditText
+            android:id="@+id/wait_update"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="Enter approximate wait time"
+            android:inputType="number"
+            android:textColor="@android:color/darker_gray"
+            android:textSize="20sp"
+            android:background="@android:color/transparent"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="10dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/black"
+            android:textSize="20sp"
+            android:text="Comments: "/>
+
+        <EditText
+            android:id="@+id/comment_update"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="Enter comment...
+                "
+            android:textColor="@android:color/darker_gray"
+            android:textSize="20sp"
+            android:background="@android:color/transparent"/>
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/update_location"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:background="@android:color/holo_blue_dark"
+        android:text="Update"/>
+
+</LinearLayout>

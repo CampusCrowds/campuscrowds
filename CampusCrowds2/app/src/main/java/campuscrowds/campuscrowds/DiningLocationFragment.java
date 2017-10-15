@@ -1,11 +1,11 @@
 package campuscrowds.campuscrowds;
 
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Base64;
@@ -17,7 +17,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -25,11 +24,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import org.w3c.dom.Text;
-
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.Date;
 import java.util.UUID;
 
 /**
@@ -40,7 +35,6 @@ import java.util.UUID;
  */
 
 public class DiningLocationFragment extends Fragment {
-    private static final int CAMERA_IMAGE = 111;
 
     //Variables for the specific dining location
     private UUID mLocationId;
@@ -48,12 +42,18 @@ public class DiningLocationFragment extends Fragment {
     public static final String LOCATION_ID  = "LOCATION_ID";
     private ImageView mLocationPhoto;
     private TextView mLastUpdatedDate;
+    private TextView mWaitTime;
+    private TextView mComment;
 
     //Database variables
     private DatabaseReference mDiningLocationReference;
     private DatabaseReference mDateReference;
+    private DatabaseReference mWaitReference;
+    private DatabaseReference mCommentReference;
     private ValueEventListener mDateListener;
     private ValueEventListener mLocationListener;
+    private ValueEventListener mWaitListener;
+    private ValueEventListener mCommentListener;
 
     //This is called to do initial creation of the fragment
     @Override
@@ -73,7 +73,7 @@ public class DiningLocationFragment extends Fragment {
                 if(!s.equals("empty")){
                     //Put a different picture in
                     try {
-                        Bitmap Image = decodeFromFirebaseBase64(s);
+                        Bitmap Image = decodeFromFirebase(s);
                         mLocationPhoto.setImageBitmap(Image);
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -104,19 +104,50 @@ public class DiningLocationFragment extends Fragment {
         mDateReference.addValueEventListener(dateListener);
         //Keep a copy of the location listener so we can remove it when the app stops
         mDateListener = dateListener;
+
+        //Add a value event listener to the wait time
+        ValueEventListener waitListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String s = dataSnapshot.getValue(String.class);
+                mWaitTime.setText(s);
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                //TODO make an error message
+            }
+        };
+        mWaitReference.addValueEventListener(waitListener);
+        mWaitListener = waitListener;
+
+        //Add a value event listener to the comments
+        ValueEventListener commentListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String s = dataSnapshot.getValue(String.class);
+                mComment.setText(s);
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                //TODO make an error message
+            }
+        };
+        mCommentReference.addValueEventListener(commentListener);
+        mCommentListener = commentListener;
     }
 
     //Creates and returns this fragment's view hierarchy
     @Override
     public View onCreateView(LayoutInflater LI, ViewGroup VG, Bundle savedInstanceState){
         View v = LI.inflate(R.layout.fragment_dining_location, VG, false);
-
         //Connect the last posted picture with the ImageView in the layout
         mLocationPhoto = (ImageView) v.findViewById(R.id.most_recent);
-
         //Connecting the time of the last post with the TextView in the layout
         mLastUpdatedDate = (TextView) v.findViewById(R.id.post_date);
-
+        //Connecting the wait time of the last update with the TextView
+        mWaitTime = (TextView) v.findViewById(R.id.wait_time);
+        //Connecting the comment of the last update with the TextView
+        mComment = (TextView) v.findViewById(R.id.comment);
         return v;
     }
 
@@ -142,6 +173,8 @@ public class DiningLocationFragment extends Fragment {
         //Initialize the database references
         mDiningLocationReference = FirebaseDatabase.getInstance().getReference("location/"+mLocation.getLocationName()+"/1");
         mDateReference = FirebaseDatabase.getInstance().getReference("location/"+mLocation.getLocationName()+"/2");
+        mWaitReference = FirebaseDatabase.getInstance().getReference("location/"+mLocation.getLocationName()+"/3");
+        mCommentReference = FirebaseDatabase.getInstance().getReference("location/"+mLocation.getLocationName()+"/4");
     }
 
     @Override
@@ -151,9 +184,14 @@ public class DiningLocationFragment extends Fragment {
         if(mLocationListener != null){
             mDiningLocationReference.removeEventListener(mLocationListener);
         }
-        //Remove location listener
         if(mDateListener != null){
             mDateReference.removeEventListener(mDateListener);
+        }
+        if(mWaitListener != null){
+            mWaitReference.removeEventListener(mWaitListener);
+        }
+        if(mCommentListener != null){
+            mCommentReference.removeEventListener(mCommentListener);
         }
     }
 
@@ -161,49 +199,30 @@ public class DiningLocationFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater menuInflater){
         super.onCreateOptionsMenu(menu, menuInflater);
-        menuInflater.inflate(R.menu.take_picture, menu);
+        menuInflater.inflate(R.menu.update_location, menu);
     }
 
     //This method responds to when the user clicks on a camera
     @Override
     public boolean onOptionsItemSelected(MenuItem mi){
         switch(mi.getItemId()){
-            case R.id.take_picture:
-                //LocationBucket.get(getActivity()).getLocation(mLocationId).setLastUpdated(new Date());
-                mDateReference.setValue((new Date()).toString());
-                cameraPressed();
+            case R.id.update_location:
+                Bundle bundle = new Bundle();
+                bundle.putSerializable(LOCATION_ID, mLocation.getId());
+                UpdateLocationFragment nextFrag= new UpdateLocationFragment();
+                nextFrag.setArguments(bundle);
+                FragmentManager fm = getActivity().getSupportFragmentManager();
+                FragmentTransaction ft = fm.beginTransaction();
+                ft.replace(R.id.fragment_container, nextFrag, "tag");
+                ft.addToBackStack(null);
+                ft.commit();
                 return true;
             default:
                 return super.onOptionsItemSelected(mi);
         }
     }
 
-    public void cameraPressed(){
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
-            startActivityForResult(takePictureIntent, CAMERA_IMAGE);
-        }
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == CAMERA_IMAGE && resultCode == getActivity().RESULT_OK) {
-            Bundle extras = data.getExtras();
-            Bitmap imageBitmap = (Bitmap) extras.get("data");
-            Bitmap resizedBitmap = Bitmap.createScaledBitmap(imageBitmap, 1000, 1000, false);
-            mLocationPhoto.setImageBitmap(resizedBitmap);
-            encodeBitmapAndSaveToFirebase(resizedBitmap);
-        }
-    }
-
-    public void encodeBitmapAndSaveToFirebase(Bitmap bitmap) {
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
-        String imageEncoded = Base64.encodeToString(outputStream.toByteArray(), Base64.DEFAULT);
-        mDiningLocationReference.setValue(imageEncoded);
-    }
-
-    public static Bitmap decodeFromFirebaseBase64(String image) throws IOException {
+    public static Bitmap decodeFromFirebase(String image) throws IOException {
         byte[] decodedByteArray = android.util.Base64.decode(image, Base64.DEFAULT);
         return BitmapFactory.decodeByteArray(decodedByteArray, 0, decodedByteArray.length);
     }
